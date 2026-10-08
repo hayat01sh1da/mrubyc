@@ -848,10 +848,14 @@ void mrbc_alloc_statistics( struct MRBC_ALLOC_STATISTICS *ret )
   ret->used = 0;
   ret->free = 0;
   ret->fragmentation = -1;
+  ret->max_free_size = 0;
 
   while( block < (USED_BLOCK *)BPOOL_END(pool) ) {
     if( IS_FREE_BLOCK(block) ) {
       ret->free += BLOCK_SIZE(block);
+      if( ret->max_free_size < BLOCK_SIZE(block) ) {
+	ret->max_free_size = BLOCK_SIZE(block);
+      }
     } else {
       ret->used += BLOCK_SIZE(block);
     }
@@ -898,7 +902,6 @@ void mrbc_alloc_get_profiling(struct MRBC_ALLOC_PROF *prof)
 #endif  // defined(MRBC_USE_ALLOC_PROF)
 
 
-#if defined(MRBC_DEBUG)
 //================================================================
 /*! print used/free memory size.
 
@@ -910,8 +913,8 @@ void mrbc_alloc_print_statistics( void )
   struct MRBC_ALLOC_STATISTICS stat;
   mrbc_alloc_statistics( &stat );
   mrbc_printf("== MEMORY STAT ==\n");
-  mrbc_printf(" total:%d used:%d free:%d frag:%d\n",
-              stat.total, stat.used, stat.free, stat.fragmentation );
+  mrbc_printf(" total:%d used:%d free:%d maxfree:%d frag:%d\n",
+    stat.total, stat.used, stat.max_free_size, stat.free, stat.fragmentation );
 }
 
 
@@ -1005,5 +1008,4 @@ void mrbc_alloc_print_memory_pool( void )
   mrbc_alloc_print_memory_block(0);
 }
 
-#endif // defined(MRBC_DEBUG)
 #endif // !defined(MRBC_ALLOC_LIBC)

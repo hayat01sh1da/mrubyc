@@ -41,6 +41,7 @@ struct MRBC_ALLOC_STATISTICS {
   unsigned int used;		//!< returns used memory.
   unsigned int free;		//!< returns free memory.
   unsigned int fragmentation;	//!< returns memory fragmentation count.
+  unsigned int max_free_size;	//!< return the max size of a free memory block.
 };
 
 /*!@brief
