@@ -65,7 +65,10 @@ void mrbc_instance_call_initialize( mrbc_vm *vm, mrbc_value v[], int argc )
   mrbc_class *own_cls;
 
   own_cls = mrbc_find_method(&method, v[0].instance->cls, MRBC_SYM(initialize));
-  if( own_cls == NULL ) return;
+  if( own_cls == NULL ) {
+    if( argc != 0 ) mrbc_raise(vm, MRBC_CLASS(ArgumentError), 0);
+    return;
+  }
 
   if( method.c_func ) {
     method.func(vm, v, argc);
